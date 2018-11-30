@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { handleInitialData } from '../actions/shared';
 import { connect } from 'react-redux';
+import Dashboard from './Dashboard';
 class App extends Component {
   componentDidMount() {
     //! call handleInitialData to get data from our store
@@ -8,13 +9,12 @@ class App extends Component {
     dispatch(handleInitialData());
   }
   render() {
-    return <div>Starter Code.</div>;
+    return <div>{this.props.loading ? <h1>Loading...</h1> : <Dashboard />}</div>;
   }
 }
-function mapStateToProps(state) {
+function mapStateToProps({ authedUser }) {
   return {
-    users: state.users,
-    polls: state.polls
+    loading: authedUser === null
   };
 }
 export default connect(mapStateToProps)(App);
