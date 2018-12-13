@@ -12,12 +12,15 @@ export function handleAddPoll(poll) {
   return (dispatch, getState) => {
     const { authedUser } = getState();
     dispatch(showLoading());
-    return savePoll({
-      ...poll,
-      author: authedUser
-    })
-      .then(() => dispatch(addPoll(poll)))
-      .then(() => dispatch(hideLoading()));
+    return (
+      savePoll({
+        ...poll,
+        author: authedUser
+      })
+        //this argument poll is the newly formatted poll we are passing to our action handler.
+        .then((poll) => dispatch(addPoll(poll)))
+        .then(() => dispatch(hideLoading()))
+    );
   };
 }
 function addPoll(poll) {

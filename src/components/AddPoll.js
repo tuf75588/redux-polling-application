@@ -55,8 +55,5 @@ class AddPoll extends Component {
     );
   }
 }
-function mapStateToProps(state) {
-  return {};
-}
 
-export default connect(mapStateToProps)(AddPoll);
+export default connect()(AddPoll);
