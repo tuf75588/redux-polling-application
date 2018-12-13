@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-
+import { connect } from 'react-redux';
+import { handleAddPoll } from '../actions/polls';
 class AddPoll extends Component {
   state = {
     question: '',
@@ -18,6 +19,7 @@ class AddPoll extends Component {
   handleSubmit = (event) => {
     event.preventDefault();
     //redirect page to home once react router is added to app
+    this.props.dispatch(handleAddPoll(this.state));
   };
   isDisabled = () => {
     const { question, a, b, c, d } = this.state;
@@ -53,5 +55,8 @@ class AddPoll extends Component {
     );
   }
 }
+function mapStateToProps(state) {
+  return {};
+}
 
-export default AddPoll;
+export default connect(mapStateToProps)(AddPoll);
