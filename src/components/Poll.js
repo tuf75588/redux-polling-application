@@ -1,43 +1,56 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { getPercentage } from '../utils/helpers';
+import { handleAddAnswer } from '../actions/answers';
 
 const getVoteKeys = () => ['aVotes', 'bVotes', 'cVotes', 'dVotes'];
+
 class Poll extends Component {
   handleAnswer = (answer) => {
+    const { poll, authedUser } = this.props;
     this.answered = true;
-    const { authedUser, poll } = this.props;
-    console.log(`add answer!`);
+
+    this.props.dispatch(
+      handleAddAnswer({
+        authedUser,
+        answer,
+        id: poll.id
+      })
+    );
   };
   render() {
     if (this.props.poll === null) {
-      return <h1>Cannot locate this poll</h1>;
+      return <p>This poll does not exist</p>;
     }
-    const { vote, poll, authorAvatar } = this.props;
+
+    const { poll, vote, authorAvatar } = this.props;
+
     const totalVotes = getVoteKeys().reduce((total, key) => total + poll[key].length, 0);
 
     return (
       <div className='poll-container'>
         <h1 className='question'>{poll.question}</h1>
         <div className='poll-author'>
-          By: <img src={authorAvatar} alt={`avatar for ${this.props.authedUser}`} />
+          By <img src={authorAvatar} alt="Author's avatar" />
         </div>
         <ul>
-          {['aText', 'bText', 'cText', 'dText'].map((question, key) => {
-            const count = poll[question[0] + 'Votes'].length;
+          {['aText', 'bText', 'cText', 'dText'].map((key) => {
+            const count = poll[key[0] + 'Votes'].length;
+
             return (
               <li
-                className={`option ${vote === question[0] ? 'chosen' : ''}`}
+                key={key}
                 onClick={() => {
                   if (vote === null && !this.answered) {
                     this.handleAnswer(key[0]);
                   }
-                }}>
+                }}
+                className={`option ${vote === key[0] ? 'chosen' : ''}`}>
                 {vote === null ? (
-                  poll[question]
+                  poll[key]
                 ) : (
                   <div className='result'>
-                    <span>{poll[question]}</span>
+                    <span>{poll[key]}</span>
                     <span>
                       {getPercentage(count, totalVotes)}% ({count})
                     </span>
@@ -52,19 +65,21 @@ class Poll extends Component {
   }
 }
 
-function mapStateToProps({ authedUser, users, polls }, { match }) {
-  //second argument to mapStateToProps is any props passed to the component we are connecting
+function mapStateToProps({ authedUser, polls, users }, { match }) {
   const { id } = match.params;
   const poll = polls[id];
+
   if (!poll) {
     return {
       poll: null
     };
   }
+
   const vote = getVoteKeys().reduce((vote, key) => {
     if (vote !== null) {
       return vote[0];
     }
+
     return poll[key].includes(authedUser) ? key : vote;
   }, null);
 
