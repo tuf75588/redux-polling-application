@@ -20,6 +20,7 @@ class AddPoll extends Component {
     event.preventDefault();
     //redirect page to home once react router is added to app
     this.props.dispatch(handleAddPoll(this.state));
+    this.props.history.push('/');
   };
   isDisabled = () => {
     const { question, a, b, c, d } = this.state;

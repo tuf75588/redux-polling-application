@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 class Dashboard extends Component {
   state = {
     showAnswered: false
@@ -31,7 +32,11 @@ class Dashboard extends Component {
         </div>
         <ul className='dashboard-list'>
           {list.map((item, id) => {
-            return <li key={item.id}>{item.question}</li>;
+            return (
+              <li key={item.id}>
+                <Link to={`/polls/${item.id}`}>{item.question}</Link>
+              </li>
+            );
           })}
         </ul>
       </div>
